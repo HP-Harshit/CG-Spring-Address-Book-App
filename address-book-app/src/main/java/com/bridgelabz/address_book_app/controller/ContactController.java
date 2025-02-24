@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,13 +35,13 @@ public class ContactController {
     }
 
     @PostMapping("/create")
-    public Contact createContact(@RequestBody ContactDTO contactDTO) {
+    public Contact createContact(@Valid @RequestBody ContactDTO contactDTO) {
         log.info("Creating contact: {}", contactDTO);
         return contactService.createContact(contactDTO);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Contact> updateContact(@PathVariable Long id, @RequestBody ContactDTO contactDTO) {
+    public ResponseEntity<Contact> updateContact(@PathVariable Long id, @Valid @RequestBody ContactDTO contactDTO) {
         log.info("Updating contact with ID: {}", id);
         Contact updatedContact = contactService.updateContact(id, contactDTO);
         if (updatedContact != null) {
