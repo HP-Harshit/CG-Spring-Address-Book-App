@@ -1,6 +1,7 @@
 package com.bridgelabz.address_book_app.controller;
 
 import com.bridgelabz.address_book_app.dto.ContactDTO;
+import com.bridgelabz.address_book_app.exception.AddressBookNotFoundException;
 import com.bridgelabz.address_book_app.model.Contact;
 import com.bridgelabz.address_book_app.service.IContactService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class ContactController {
         log.info("Getting contact with ID: {}", id);
         return contactService.getContactById(id)
                 .map(contact -> new ResponseEntity<>(contact, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AddressBookNotFoundException("Address Book entry not found with ID: " + id));
     }
 
     @PostMapping("/create")
@@ -47,7 +48,7 @@ public class ContactController {
         if (updatedContact != null) {
             return new ResponseEntity<>(updatedContact, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new AddressBookNotFoundException("Address Book entry not found with ID: " + id);
         }
     }
 
