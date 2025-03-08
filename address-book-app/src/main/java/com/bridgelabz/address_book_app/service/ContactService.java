@@ -2,50 +2,53 @@ package com.bridgelabz.address_book_app.service;
 
 import com.bridgelabz.address_book_app.dto.ContactDTO;
 import com.bridgelabz.address_book_app.model.Contact;
+import com.bridgelabz.address_book_app.repository.ContactRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ContactService implements IContactService {
 
-    private final List<Contact> contacts = new ArrayList<>();
-    private long currentId = 1;
+    @Autowired
+    private ContactRepository contactRepository;
 
     @Override
     public Contact createContact(ContactDTO contactDTO) {
         Contact contact = new Contact();
-        contact.setId(currentId++);
-        contact.setName(contactDTO.getName());
-        contact.setPhoneNumber(contactDTO.getPhoneNumber());
-        contact.setEmail(contactDTO.getEmail());
+        contact.setFullname(contactDTO.getFullname());
         contact.setAddress(contactDTO.getAddress());
-        contacts.add(contact);
-        return contact;
+        contact.setCity(contactDTO.getCity());
+        contact.setState(contactDTO.getState());
+        contact.setZipcode(contactDTO.getZipcode());
+        contact.setPhonenumber(contactDTO.getPhonenumber());
+        return contactRepository.save(contact);
     }
 
     @Override
     public Optional<Contact> getContactById(Long id) {
-        return contacts.stream().filter(c -> c.getId().equals(id)).findFirst();
+        return contactRepository.findById(id);
     }
 
     @Override
     public List<Contact> getAllContacts() {
-        return contacts;
+        return contactRepository.findAll();
     }
 
     @Override
     public Contact updateContact(Long id, ContactDTO contactDTO) {
-        Optional<Contact> contactOptional = getContactById(id);
+        Optional<Contact> contactOptional = contactRepository.findById(id);
         if (contactOptional.isPresent()) {
             Contact contact = contactOptional.get();
-            contact.setName(contactDTO.getName());
-            contact.setPhoneNumber(contactDTO.getPhoneNumber());
-            contact.setEmail(contactDTO.getEmail());
+            contact.setFullname(contactDTO.getFullname());
             contact.setAddress(contactDTO.getAddress());
-            return contact;
+            contact.setCity(contactDTO.getCity());
+            contact.setState(contactDTO.getState());
+            contact.setZipcode(contactDTO.getZipcode());
+            contact.setPhonenumber(contactDTO.getPhonenumber());
+            return contactRepository.save(contact);
         } else {
             return null;
         }
@@ -53,6 +56,6 @@ public class ContactService implements IContactService {
 
     @Override
     public void deleteContact(Long id) {
-        contacts.removeIf(contact -> contact.getId().equals(id));
+        contactRepository.deleteById(id);
     }
 }
